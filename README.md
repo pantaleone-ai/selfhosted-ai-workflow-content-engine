@@ -1,5 +1,5 @@
-# PantaleoneAI - Agentic Content Server - Configuration
-Own your own AI stack and create a marketing content engine in less than 60 minutes
+# PantaleoneAI - Agentic Content @ Scale
+Create an AI content engine in less than 60 minutes
 
 # Step 1 - Get an OCI (or similar) Server
 
@@ -34,7 +34,7 @@ Once logged into your OCI console, follow these steps to create your virtual mac
 *   **Create Instance:** Click the "Create" button.
 *   **Connect:** Allow a few minutes for provisioning. Once the instance is running, connect to it using an SSH client and your generated SSH key.
 
-# Firewall Setup for Your OCI AI Content Factory
+# Step 2 - Firewall Setup for Your OCI AI Content Engine
 
 This guide provides simple steps to open the necessary ports for your AI Content Factory on Oracle OCI. You'll configure two layers of firewall rules:
 
