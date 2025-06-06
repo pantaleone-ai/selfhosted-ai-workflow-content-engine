@@ -142,6 +142,35 @@ This container runs your AI models. It's the core component for generating AI co
 
 This step launches all the other components of your AI content factory, orchestrating them with Docker Compose. Ensure the `docker-compose.yml` file below is accurately saved on your OCI instance (e.g., in `/home/ubuntu/ai/` as mentioned in the Traefik volume mount, or adjust path if needed).
 
+*   **First, for Traefik and SSL configuration**, create a configuration file called `traefik_dynamic.yml` with the following content to protect your services from abuse (configure according to your requirements):
+      ```yaml
+    tls:
+      stores:
+        default:
+    #      defaultCertificate:
+    #        certFile: /etc/traefik/certs/default.crt
+    #        keyFile: /etc/traefik/certs/default.key
+      options:
+        default:
+          minVersion: VersionTLS12
+          cipherSuites:
+            - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          curvePreferences:
+            - CurveP256
+            - CurveP384
+    #      sniStrict: true
+
+    http:
+      middlewares:
+        rate-limit:
+          rateLimit:
+            average: 100
+            burst: 50
+    ```
+
+
+
 *   **Ensure `docker-compose.yml` is ready, then launch it:**
     ```bash
     docker compose up -d
