@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  # PostgreSQL Database (Local)
+  # PostgreSQL Database (Local) with pgvector
   postgres:
-    image: postgres:13
+    image: ankane/pgvector:latest
     container_name: postgres_local
     environment:
       POSTGRES_USER: n8n_user
@@ -12,7 +12,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.5
     labels:
       - "traefik.enable=false"
     deploy:
@@ -20,6 +21,7 @@ services:
         limits:
           cpus: '0.25'
           memory: 256m
+    command: bash -c "apt-get update && apt-get install -y postgresql-contrib && postgres"
     restart: unless-stopped
 
   # n8n Workflow Automation (Configured for Local Postgres & Redis)
@@ -29,7 +31,7 @@ services:
     environment:
       # --- Local PostgreSQL Connection ---
       - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_HOST=postgres_local
       - DB_POSTGRESDB_PORT=5432
       - DB_POSTGRESDB_DATABASE=n8n_db
       - DB_POSTGRESDB_USER=n8n_user
@@ -46,7 +48,7 @@ services:
 
       # --- n8n Specific Configuration ---
       - N8N_ENCRYPTION_KEY=UPDATE_ME
-      - N8N_HOST=n8n.rapigent.com
+      - N8N_HOST=UPDATE_ME
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - N8N_EDITOR_BASE_URL=UPDATE_ME
@@ -68,9 +70,10 @@ services:
       - "traefik.http.routers.n8n.tls.options=default"
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.6
     depends_on:
-      postgres:
+      postgres_local:
         condition: service_started
       redis:
         condition: service_started
@@ -87,13 +90,14 @@ services:
     container_name: openwebui
     environment:
       # Connects to llama.cpp on host port 8080
-      - OPENAI_API_BASE_URLS=http://0.0.0.0:8080/v1
+      - OPENAI_API_BASE_URLS=http://llama-cpp:8080/v1
       - WEBUI_URL=UPDATE_ME 
       - DATA_DIR=/app/backend/data
       - NO_PROXY=0.0.0.0,localhost,127.0.0.1,host.docker.internal
       - UV_SYSTEM_PYTHON=true
-      - WEBUI_NAME=UPDATE_ME
-
+      - WEBUI_NAME=PantaleoneAI
+      # --- PostgreSQL Connection for pgvector ---
+      - PGVECTOR_URL=postgresql://UPDATE_ME
       # --- Redis Connection for OpenWebUI ---
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -110,9 +114,11 @@ services:
       - "traefik.http.routers.openwebui.tls.options=default"
       - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.7
     depends_on:
-      - redis # Wait for redis container to be started
+      - redis
+      - llama-cpp
     deploy:
       resources:
         limits:
@@ -122,7 +128,7 @@ services:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
-  # Traefik Reverse Proxy (Configuration as provided by user initially)
+  # Traefik Reverse Proxy
   traefik:
     image: traefik:v2.11
     container_name: traefik
@@ -134,23 +140,20 @@ services:
       - --certificatesresolvers.myresolver.acme.httpchallenge=true
       - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
       - --certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.myresolver.acme.email=UPDATE_ME # !!! REPLACE WITH YOUR ACTUAL EMAIL !!!
+      - --certificatesresolvers.myresolver.acme.email=UPDATE_ME
       - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
       - --log.level=INFO
-      - --providers.file.filename=/etc/traefik/traefik_dynamic.yml # If you use a dynamic config file
-      # Optional: Traefik Dashboard
-      # - --api.dashboard=true
-      # - --api.insecure=true # For local testing of dashboard only, DO NOT use in production
+      - --providers.file.filename=/etc/traefik/traefik_dynamic.yml
     ports:
       - "80:80"
       - "443:443"
-      # - "8080:8080" # If exposing Traefik dashboard insecurely
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - letsencrypt:/letsencrypt
-      - /home/ubuntu/ai/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro # Mount your dynamic config
+      - /home/ubuntu/ai/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.2
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.http-catchall.rule=HostRegexp(`{host:.+}`)"
@@ -158,30 +161,22 @@ services:
       - "traefik.http.routers.http-catchall.middlewares=redirect-to-https@docker"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
-      # Labels for secure Traefik Dashboard (if enabled in command and DNS is set for traefik.rapigent.com)
-      # - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.rapigent.com`)"
-      # - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
-      # - "traefik.http.routers.traefik-dashboard.tls=true"
-      # - "traefik.http.routers.traefik-dashboard.tls.certresolver=myresolver"
-      # - "traefik.http.routers.traefik-dashboard.service=api@internal"
-      # - "traefik.http.middlewares.my-auth.basicauth.users=YOUR_USER:YOUR_HASHED_PASSWORD" # Example: admin:$$apr1$$...
-      # - "traefik.http.routers.traefik-dashboard.middlewares=my-auth"
     deploy:
       resources:
         limits:
-          cpus: ‘0.25' # Using previously agreed optimization
-          memory: 256m # Using previously agreed optimization
+          cpus: '0.25'
+          memory: 256m
     restart: unless-stopped
 
   # Redis Caching
   redis:
     image: redis:7.2-alpine
     container_name: redis
-    # command: ["redis-server", "--requirepass", "your_strong_redis_password"] # Uncomment to set password
     volumes:
       - redis_data:/data
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.3
     labels:
       - "traefik.enable=false"
     deploy:
@@ -197,29 +192,49 @@ services:
     container_name: crawl4ai
     environment:
       - PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
-      # FastAPI in crawl4ai image listens on 0.0.0.0:8000 by default
     volumes:
       - crawl4ai_data:/app/data
-      - /dev/shm:/dev/shm # Important for Playwright/Chrome stability
+      - /dev/shm:/dev/shm
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.crawl4ai.rule=Host(`UPDATE_ME`)"
       - "traefik.http.routers.crawl4ai.entrypoints=websecure"
       - "traefik.http.routers.crawl4ai.tls=true"
       - "traefik.http.routers.crawl4ai.tls.certresolver=myresolver"
-      - "traefik.http.services.crawl4ai.loadbalancer.server.port=8000" # crawl4ai listens on port 8000
+      - "traefik.http.services.crawl4ai.loadbalancer.server.port=8000"
     networks:
-      - internal
+      internal:
+        ipv4_address: 172.18.0.4
     deploy:
       resources:
         limits:
           cpus: '0.5'
-          memory: 3g # Monitor this, Playwright can be memory hungry
+          memory: 3g
+    restart: unless-stopped
+
+  # llama.cpp Service
+  llama-cpp:
+    image: llama-cpp:latest
+    container_name: llama_cpp
+    networks:
+      internal:
+        ipv4_address: 172.18.0.8
+    volumes:
+      - ./models:/models
+    command: ./llama-server --model /models/model.gguf --port 8080
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 4g
     restart: unless-stopped
 
 networks:
   internal:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
 
 volumes:
   postgres_data:
