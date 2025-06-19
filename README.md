@@ -127,7 +127,7 @@ This container runs your AI models. It's the core component for generating AI co
     ```bash
     huggingface-cli download AmpereComputing/llama-3.2-1b-instruct-gguf Llama-3.2-1B-Instruct-Q8R16.gguf --local-dir /models
     huggingface-cli download unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --local-dir /models
-    huggingface-cli download unsloth/gemma-3-4b-it-qat-UD-Q8_K_XL.gguf --local-dir /models
+    huggingface-cli download unsloth/gemma-3-4b-it-qat-GGUF gemma-3-4b-it-qat-UD-Q8_K_XL.gguf --local-dir /models
     ```
 
 *   **Load model for use:**
