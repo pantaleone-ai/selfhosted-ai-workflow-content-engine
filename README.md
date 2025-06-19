@@ -1,4 +1,4 @@
-# PantaleoneAI - Agentic Content @ Scale
+# Your-Local-AI - Agentic Content @ Scale
 Create an AI content engine in less than 60 minutes
 
 # Step 1 - Get an OCI (or similar) Server
@@ -401,5 +401,25 @@ This step launches all the other components of your AI content factory, orchestr
       crawl4ai_data:
     ```
     *   **Remember to replace `email` with *your* actual email address in the `traefik` service configuration for SSL certificate issuance!**
+ 
+# Updating & Upgrading
+
+*   **Remove containers via docker compose**
+    ```bash
+    docker compose down
+    ```
+
+    *   **Remove llama.cpp**
+    ```bash
+    docker stop my_container or docker stop "1a2b3c4d5e6f"
+    ```
+
+    *   **Remove the llama.cpp volume**
+    ```bash
+    docker rm "1a2b3c4d5e6f"
+    ```
+    
+
+
 ---
 
