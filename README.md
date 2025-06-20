@@ -432,7 +432,18 @@ This step launches all the other components of your AI content factory, orchestr
     
     **Use this command to get back into the shell environment.  Then use the huggingface-cli to download new models per the instructions above**
     ```bash
-     docker exec -it llama sh
+     top
+    ```
+
+# Other helpful commands
+
+*   **Check server CPU and process utilization**
+    ```bash
+    docker compose down
+    ```
+*   **Check server RAM utilization**
+    ```bash
+    free -h
     ```
 ---
 
