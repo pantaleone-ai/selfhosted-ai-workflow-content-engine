@@ -439,7 +439,7 @@ This step launches all the other components of your AI content factory, orchestr
 
 *   **Check server CPU and process utilization**
     ```bash
-    docker compose down
+    top
     ```
 *   **Check server RAM utilization**
     ```bash
