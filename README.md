@@ -127,12 +127,11 @@ This container runs your AI models. It's the core component for generating AI co
     ```bash
     huggingface-cli download AmpereComputing/llama-3.2-1b-instruct-gguf Llama-3.2-1B-Instruct-Q8R16.gguf --local-dir /models
     huggingface-cli download unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --local-dir /models
-    huggingface-cli download unsloth/gemma-3-4b-it-qat-GGUF gemma-3-4b-it-qat-UD-Q8_K_XL.gguf --local-dir /models
     ```
 
-*   **Load model for use:**
+*   **Load model for use via llama-server:**
     ```bash
-    ./llama-server -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf -t 3 -tb 3 --host 0.0.0.0 --port 8080
+    ./llama-server -m /models/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
 
 *   **Keep container running:** To exit the CLI without stopping the container, press `CTRL + P`, then `CTRL + Q`.
@@ -419,8 +418,10 @@ This step launches all the other components of your AI content factory, orchestr
     ```bash
     docker rm "1a2b3c4d5e6f"
     ```
-    
 
-
+    *   **Download the latest docker image (if needed)**
+    ```bash
+   sudo docker pull amperecomputingai/llama.cpp:latest
+   ```
 ---
 
