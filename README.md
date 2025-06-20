@@ -1,5 +1,5 @@
-# Your-Local-AI - Agentic Content @ Scale
-Create an AI content engine in less than 60 minutes
+# Your Local Agentic AI Content Engine
+Create an AI content engine in less than 60 minutes for free!
 
 # Step 1 - Get an OCI (or similar) Server
 
