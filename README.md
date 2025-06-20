@@ -414,19 +414,25 @@ This step launches all the other components of your AI content factory, orchestr
     docker compose down
     ```
 
-    *   **Remove llama.cpp**
+    **Remove llama.cpp**
     ```bash
     docker stop my_container or docker stop "1a2b3c4d5e6f"
     ```
 
-    *   **Remove the llama.cpp volume**
+    **Remove the llama.cpp volume**
     ```bash
     docker rm "1a2b3c4d5e6f"
     ```
 
-    *   **Download the latest docker image (if needed)**
+    **Download the latest docker image (if needed)**
     ```bash
-      sudo docker pull amperecomputingai/llama.cpp:latest
+    sudo docker pull amperecomputingai/llama.cpp:latest
+    ```
+    I often need to go back to the llama container command line to optimize of download new models.
+    
+    **Use this command to get back into the shell environment.  Then use the huggingface-cli to download new models per the instructions above**
+    ```bash
+     docker exec -it llama sh
     ```
 ---
 
