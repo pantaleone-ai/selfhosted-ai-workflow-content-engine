@@ -402,6 +402,11 @@ This step launches all the other components of your AI content factory, orchestr
     ```
     *   **Remember to replace `email` with *your* actual email address in the `traefik` service configuration for SSL certificate issuance!**
  
+    *   **Finally, makle sure all containers on the same network and add the llama container to the network ai_internal:**
+         ```bash
+             docker network connect --ip 172.18.0.8 ai_internal llama
+         ```
+ 
 # Updating & Upgrading
 
 *   **Remove containers via docker compose**
@@ -421,7 +426,7 @@ This step launches all the other components of your AI content factory, orchestr
 
     *   **Download the latest docker image (if needed)**
     ```bash
-   sudo docker pull amperecomputingai/llama.cpp:latest
-   ```
+      sudo docker pull amperecomputingai/llama.cpp:latest
+    ```
 ---
 
