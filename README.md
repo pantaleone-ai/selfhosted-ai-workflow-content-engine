@@ -118,20 +118,29 @@ Connect to your OCI instance via SSH to configure UFW (Uncomplicated Firewall).
 
 This container runs your AI models. It's the core component for generating AI content.
 
-*   **Start the server:**
+*   **Start the server:** (--privileged=true optional!)
     ```bash
     sudo docker run --privileged=true --name llama --entrypoint /bin/bash -it amperecomputingai/llama.cpp:latest
     ```
 
 *   **Download AI models (if needed):**
     ```bash
-    huggingface-cli download AmpereComputing/llama-3.2-1b-instruct-gguf Llama-3.2-1B-Instruct-Q8R16.gguf --local-dir /models
-    huggingface-cli download unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --local-dir /models
+    huggingface-cli download AmpereComputing/llama-3.2-1b-instruct-gguf Llama-3.2-1B-Instruct-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf -t 3 -tb 3
+    
+    huggingface-cli download unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --local-dir /models && ./llama-cli -m /models/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf -t 3 -tb 3
+
+    huggingface-cli download unsloth/gemma-3-4b-it-qat-GGUF gemma-3-4b-it-qat-Q4_K_M.gguf --local-dir /models && ./llama-cli -m /models/gemma-3-4b-it-qat-Q4_K_M.gguf -t 3 -tb 3
+    
+    ```
+
+    *   **Once you've tested inference and all is working, get out of the CLI via:**
+    ```bash
+      control + c
     ```
 
 *   **Load model for use via llama-server:**
     ```bash
-    ./llama-server -m /models/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf -t 3 -tb 3 --host 0.0.0.0 --port 8080
+    ./llama-server -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
 
 *   **Keep container running:** To exit the CLI without stopping the container, press `CTRL + P`, then `CTRL + Q`.
@@ -406,6 +415,15 @@ This step launches all the other components of your AI content factory, orchestr
          ```bash
              docker network connect --ip 172.18.0.8 ai_internal llama
          ```
+
+    *   **For your PGVector Database, connect to it, then enable the PG Vector extension**
+         ```bash
+             docker exec -it postgres_local psql -U n8n_user -d n8n_db
+         ```
+         
+         ```sql
+            CREATE EXTENSION vector;
+         ```
  
 # Updating & Upgrading
 
@@ -444,6 +462,23 @@ This step launches all the other components of your AI content factory, orchestr
 *   **Check server RAM utilization**
     ```bash
     free -h
+    ```
+
+*   **Docker images not connected, then remove em!**
+    ```bash
+    docker images -f dangling=true
+
+    docker image prune
+    ```
+
+*   **Similarly, kill Docker volumes not connected, then remove em!**
+    ```bash
+    docker volume ls -f dangling=true
+
+    docker volume prune
+
+    #remove a specific volume with
+    docker volume rm <volume_name>
     ```
 ---
 
