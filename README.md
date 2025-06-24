@@ -480,5 +480,18 @@ This step launches all the other components of your AI content factory, orchestr
     #remove a specific volume with
     docker volume rm <volume_name>
     ```
+    
+*   **Export all N8N credentials & copy to your servers' file system(or workflows or other settings)**
+    ```bash
+       docker exec -u node -it n8n n8n export:credentials --all --decrypted --output=/tmp/creds.json
+
+       sudo docker cp n8n:/tmp/creds.json/home/ubuntu/automate/creds.json
+
+    #then copy to your your new N8N docker file system via:
+    docker cp ./my_file.txt my_container:/app/ 
+    ```
+
+
+    
 ---
 
