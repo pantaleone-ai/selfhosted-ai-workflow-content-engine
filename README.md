@@ -490,8 +490,5 @@ This step launches all the other components of your AI content factory, orchestr
     #then copy to your your new N8N docker file system via:
     docker cp ./my_file.txt my_container:/app/ 
     ```
-
-
-    
 ---
 
