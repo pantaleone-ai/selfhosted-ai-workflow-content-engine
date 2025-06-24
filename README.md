@@ -1,5 +1,5 @@
 # Your Local Agentic AI Content Engine
-Create an AI content engine in less than 60 minutes for free!
+Create an AI content engine in less than 60 minutes for free!  Note, some of my specific configs are included below; tune to your own use case!
 
 # Step 1 - Get an OCI (or similar) Server
 
