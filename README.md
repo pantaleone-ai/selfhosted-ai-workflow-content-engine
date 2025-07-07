@@ -515,5 +515,22 @@ This step launches all the other components of your AI content factory, orchestr
     #then copy to your your new N8N docker file system via:
     docker cp ./my_file.txt my_container:/app/ 
     ```
+
+
+*   **Create chat_history table for use with N8N, including vector embeddings(768)**
+```sql
+CREATE TABLE chat_history (
+    id SERIAL PRIMARY KEY, -- A unique identifier for each message
+    session_id VARCHAR(255) NOT NULL, -- To group messages belonging to the same chat session
+    sender VARCHAR(255), -- The sender of the message
+    content TEXT NOT NULL, -- The message content
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- Timestamp when the message was created
+    embedding VECTOR(768) -- A vector column to store embeddings (adjust dimension as needed, e.g., 1024 or 512)
+);
+
+-- Optional: Create an index on the embedding column for efficient vector search
+CREATE INDEX ON chat_history USING hnsw (embedding vector_cosine_ops); -- Using HNSW index for cosine distance
+```
+    
 ---
 
