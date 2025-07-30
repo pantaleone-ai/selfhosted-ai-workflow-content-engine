@@ -346,7 +346,7 @@ This step launches all the other components of your AI content factory, orchestr
             - "443:443"
           volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
-            - letsencrypt:/letsencrypt
+            - ./acme.json:/letsencrypt/acme.json
             - /home/ubuntu/ai/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro # Mount your dynamic config
           networks:
             internal:
