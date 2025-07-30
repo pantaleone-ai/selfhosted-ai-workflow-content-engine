@@ -140,8 +140,9 @@ This container runs your AI models. It's the core component for generating AI co
 
 *   **Load model for use via llama-server:**
     ```bash
-    ./llama-server -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf -t 3 -tb 3 --host 0.0.0.0 --port 8080
+    ./llama-server -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
+    use --jinja for Qwen family models
 
 *   **Keep container running:** To exit the CLI without stopping the container, press `CTRL + P`, then `CTRL + Q`.
 
@@ -245,6 +246,7 @@ This step launches all the other components of your AI content factory, orchestr
             - N8N_PORT=5678
             - N8N_PROTOCOL=https
             - N8N_EDITOR_BASE_URL=https://n8n.rapigent.com
+            - WEBHOOK_URL=https://n8n.rapigent.com
             - N8N_LOG_LEVEL=info
             - N8N_COMMUNITY_PACKAGES_ENABLED=true
             - NODE_FUNCTION_ALLOW_EXTERNAL=* # Be cautious. List specific modules if possible.
