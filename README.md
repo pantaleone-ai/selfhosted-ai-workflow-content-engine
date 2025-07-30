@@ -138,9 +138,9 @@ This container runs your AI models. It's the core component for generating AI co
       control + c
     ```
 
-*   **Load model for use via llama-server:**
+*   **Load Qwen model for use via llama-server:**
     ```bash
-    ./llama-server -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
+    ./llama-server -m /models/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
     use --jinja for Qwen family models
 
