@@ -332,7 +332,6 @@ This step launches all the other components of your AI content factory, orchestr
             - --providers.docker.exposedbydefault=false
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
-            - --certificatesresolvers.myresolver.acme.httpchallenge=true
             - --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
             - --certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
             - --certificatesresolvers.myresolver.acme.email=UPDATE-ME
