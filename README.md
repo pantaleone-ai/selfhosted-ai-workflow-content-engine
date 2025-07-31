@@ -135,16 +135,16 @@ This container runs your AI models. It's the core component for generating AI co
     
     ```
 
-    *   **Once you've tested inference and all is working, get out of the CLI via:**
-    ```bash
-      control + c
-    ```
-
 *   **Load Qwen model for use via llama-server:**
     ```bash
     ./llama-server -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
     use --jinja for Qwen family models
+
+ * **Once you've tested inference and all is working, get out of the CLI via:**
+    ```bash
+    control + c
+    ```
 
 *   **Keep container running:** To exit the CLI without stopping the container, press `CTRL + P`, then `CTRL + Q`.
 
