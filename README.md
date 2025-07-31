@@ -125,19 +125,24 @@ This container runs your AI models. It's the core component for generating AI co
 
 *   **Download AI models (if needed):**
     ```bash
-    huggingface-cli download AmpereComputing/llama-3.2-1b-instruct-gguf Llama-3.2-1B-Instruct-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/Llama-3.2-1B-Instruct-Q8R16.gguf -t 3 -tb 3
-    
-    huggingface-cli download AmpereComputing/deepseek-r1-0528-qwen-3-8b-gguf deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf -t 3 -tb 3
+    #deepseek-r1-0528-qwen-3-8b
+    huggingface-cli download AmpereComputing/deepseek-r1-0528-qwen-3-8b-gguf deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf -t 3 -tb 3 
 
+    #qwen-3-4b
+    huggingface-cli download AmpereComputing/qwen-3-4b-gguf Qwen3-4B-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/qwen-3-4b-gguf -t 3 -tb 3 
+
+    #DeepSeek-R1-0528-Qwen3-8B
     huggingface-cli download unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf --local-dir /models && ./llama-cli -m /models/DeepSeek-R1-0528-Qwen3-8B-Q4_K_M.gguf -t 3 -tb 3
 
+    #gemma-3-4b-it-qat
     huggingface-cli download unsloth/gemma-3-4b-it-qat-GGUF gemma-3-4b-it-qat-Q4_K_M.gguf --local-dir /models && ./llama-cli -m /models/gemma-3-4b-it-qat-Q4_K_M.gguf -t 3 -tb 3
     
     ```
 
-*   **Load Qwen model for use via llama-server:**
+*   **Load Qwen3-4B-Q8R16 model for use via llama-server:**
     ```bash
-    ./llama-server -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
+    #Qwen3-4B-Q8R16
+    ./llama-server -m /models/Qwen3-4B-Q8R16.gguf -c 32768 --jinja -t 3 -tb 3 --host 0.0.0.0 --port 8080
     ```
     use --jinja for Qwen family models
 
