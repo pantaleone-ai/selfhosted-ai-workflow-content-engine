@@ -126,8 +126,11 @@ This container runs your AI models. It's the core component for generating AI co
 *   **Download AI models (if needed):**
     ```bash
     #deepseek-r1-0528-qwen-3-8b
-    huggingface-cli download AmpereComputing/deepseek-r1-0528-qwen-3-8b-gguf deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf -t 3 -tb 3 
-
+    huggingface-cli download AmpereComputing/deepseek-r1-0528-qwen-3-8b-gguf deepseek-r1-0528-qwen-3-8b-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/deepseek-r1-0528-qwen-3-8b-Q8R16.gguf -t 3 -tb 3
+    
+    #qwen-3-1.7b
+    huggingface-cli download AmpereComputing/qwen-3-1.7b-gguf Qwen3-1.7B-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/qwen-3-1.7b-gguf -t 3 -tb 3
+    
     #qwen-3-4b
     huggingface-cli download AmpereComputing/qwen-3-4b-gguf Qwen3-4B-Q8R16.gguf --local-dir /models && ./llama-cli -m /models/qwen-3-4b-gguf -t 3 -tb 3 
 
