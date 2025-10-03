@@ -1,5 +1,12 @@
-# Your Local Agentic AI Content Engine
+# Create Your Own Local Agentic AI Content Engine
 Create an AI content engine in less than 60 minutes for free!  Note, some of my specific configs are included below; tune to your own use case!
+
+[![GitHub stars](https://img.shields.io/github/stars/pantaleone-ai/selfhosted-ai-engine?style=social)](https://github.com/pantaleone-ai/selfhosted-ai-engine/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/pantaleone-ai/selfhosted-ai-engine?style=social)](https://github.com/pantaleone-ai/selfhosted-ai-engine/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/pantaleone-ai/selfhosted-ai-engine)](https://github.com/pantaleone-ai/selfhosted-ai-engine/issues)
+[![License](https://img.shields.io/github/license/pantaleone-ai/selfhosted-ai-engine)](./LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/pantaleone-ai/selfhosted-ai-engine)](https://github.com/pantaleone-ai/selfhosted-ai-engine/commits/main)
+
 
 # Step 1 - Get an OCI (or similar) Server
 
