@@ -211,6 +211,24 @@ This step launches all the other components of your AI content factory, orchestr
       version: '3.8'
       
       services:
+      langfuse:
+    image: langfuse/langfuse:latest
+    container_name: langfuse
+    restart: always
+    environment:
+      DATABASE_URL: postgres://n8n_user:n8n_pass@postgres_local:5432/langfuse_db
+      NEXTAUTH_SECRET: supersecretkey   # replace with a real random secret
+      NEXTAUTH_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - langfuse_data:/app/.langfuse
+    depends_on:
+      - postgres_local
+    networks:
+      internal:
+        ipv4_address: 172.18.0.11
+    
         # PostgreSQL Database (Local) with pgvector
         postgres:
           image: ankane/pgvector:latest
@@ -450,6 +468,7 @@ This step launches all the other components of your AI content factory, orchestr
         redis_data:
         letsencrypt:
         crawl4ai_data:
+        langfuse_data:
    
     ```
     *   **Remember to replace `email` with *your* actual email address in the `traefik` service configuration for SSL certificate issuance!**
