@@ -17,6 +17,18 @@ It uses:
 - 🗃️ **PostgreSQL** and **Redis** for persistence  
 - 🧩 **Traefik** for routing and reverse proxy  
 
+## 📚 Table of Contents
+- [Quick Start](#-quick-start)
+- [Cloud Deployment (OCI, AWS, GCP)](#️-cloud-deployment-oci-aws-gcp)
+- [Local Deployment (Mac, Windows, Linux)](#-local-deployment-mac-windows-linux)
+- [AI Model Configuration](#-ai-model-configuration)
+- [Environment and Override Files](#️-env-and-docker-composeoverrideyml)
+- [Static Network Configuration](#-static-network-configuration)
+- [Verifying Connectivity](#-verifying-connectivity)
+- [Security Tips](#️-security-tips)
+- [Next Steps](#-next-steps)
+- [License](#-license)
+
 ---
 
 ## 🚀 Quick Start
@@ -222,4 +234,10 @@ Expected response:
 - Use Cloudflared for secure remote access
 
 ## 🧾 License
-MIT © 2025 — [Pantaleone AI](https://www.pantaleone.net/) & varous open source licenses as specified by each modular software or hardware component.  Note: This code is provided for example purposes only. It is not intended for use in a production environment and has not been tested for security, reliability, or performance.
+MIT © 2025 — [Pantaleone AI](https://www.pantaleone.net/) & varous open source licenses as specified by each modular software or hardware component.  
+
+### 🧑‍💻 Contributions,! Feedback, Pull Requests Welcome
+Each service is modular — meaning you can add your own LLMs, APIs, or automation tools.  Excited to see what you will build!
+
+
+Note: All code in this repo is provided for example purposes only. It is not intended for use in a production environment and has not been tested for security, reliability, or performance.
