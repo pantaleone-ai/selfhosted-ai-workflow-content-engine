@@ -1,0 +1,124 @@
+version: "3.9"
+
+services:
+  postgres:
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      private_ai_network:
+        ipv4_address: ${POSTGRES_IP}
+    volumes:
+      - ${DATA_PATH}/postgres:/var/lib/postgresql/data
+
+  redis:
+    container_name: redis
+    image: redis:7
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      private_ai_network:
+        ipv4_address: ${REDIS_IP}
+    volumes:
+      - ${DATA_PATH}/redis:/data
+
+  n8n:
+    container_name: n8n
+    image: n8nio/n8n:latest
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=${POSTGRES_PORT}
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=http://${DOMAIN}:${HTTPS_PORT}/
+    ports:
+      - "5678:5678"
+    depends_on:
+      - postgres
+    networks:
+      private_ai_network:
+        ipv4_address: ${N8N_IP}
+    volumes:
+      - ${DATA_PATH}/n8n:/home/node/.n8n
+
+  openwebui:
+    container_name: openwebui
+    image: ghcr.io/open-webui/open-webui:latest
+    environment:
+      - ADMIN_EMAIL=${OPENWEBUI_ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${OPENWEBUI_ADMIN_PASSWORD}
+      - OPENAI_API_BASE_URL=http://${LLAMA_IP}:8080/v1
+    ports:
+      - "${OPENWEBUI_PORT}:8080"
+    depends_on:
+      - llama
+    networks:
+      private_ai_network:
+        ipv4_address: ${OPENWEBUI_IP}
+    volumes:
+      - ${DATA_PATH}/openwebui:/app/data
+
+  llama:
+    container_name: llama
+    build:
+      context: ./llama
+      args:
+        LLAMA_ACCEL: ${LLAMA_ACCEL}
+    command: >
+      --model ${LLAMA_MODEL_PATH}
+      --ctx-size ${LLAMA_CONTEXT_SIZE}
+      --temp ${LLAMA_TEMP}
+      --top-k ${LLAMA_TOP_K}
+      --top-p ${LLAMA_TOP_P}
+      --port 8080
+      --threads $(nproc)
+      --no-context-shift
+      --host 0.0.0.0
+    ports:
+      - "8080:8080"
+    networks:
+      private_ai_network:
+        ipv4_address: ${LLAMA_IP}
+    volumes:
+      - ${MODELS_PATH}:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]   # auto-detects GPU if available
+
+  traefik:
+    container_name: traefik
+    image: traefik:v3.0
+    command:
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
+    networks:
+      private_ai_network:
+        ipv4_address: ${TRAEFIK_IP}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${DATA_PATH}/traefik:/etc/traefik
+
+networks:
+  private_ai_network:
+    name: ${NETWORK_NAME}
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${SUBNET}
